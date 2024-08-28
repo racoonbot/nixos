@@ -3,8 +3,25 @@
 {
   imports =
     [ ./hardware-configuration.nix
- #     <home-manager/nixos>
+ #    <home-manager/nixos>
     ];
+  
+  nix = {
+         # Garbage colletcor\
+       gc = {
+         automatic = true;
+         dates = "weekly";
+         options = "--delete-older-than 1w";
+       };
+   
+       settings = {
+         # Enable flakes and new 'nix' command
+         experimental-features = "nix-command flakes";
+         # Deduplicate and optimize nix store
+         auto-optimise-store = true;
+       };
+     };
+    nixpkgs.config.allowUnfree = true;
 
  #home-manager.useUserPackages = true;
 
@@ -62,6 +79,8 @@
     ];
   };
 
+   
+ 
   programs.firefox.enable = true;
 
   environment.systemPackages = with pkgs; [
@@ -90,7 +109,7 @@
 
   #nixpkgs.config.allowUnfree = true;
 
-  system.stateVersion = "unstable"; # Ветка
+  system.stateVersion = "nixos-unstable"; # Ветка
 
 
 
@@ -102,7 +121,21 @@
  # Удалить все, кроме n последних системных профилей
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true; # Если хотите автоматически перезагружать систему после обновления
- # system.autoUpgrade.n = 3; # Количество сохраняемых версий
-  
+ # system.autoUpgrade.n = 5; # Количество сохраняемых версий
+
+  # Fonts.
+  fonts.packages = with pkgs; [
+    jetbrains-mono
+
+    noto-fonts-color-emoji
+    noto-fonts-emoji
+    noto-fonts-cjk
+    noto-fonts
+
+    dejavu_fonts
+
+    (nerdfonts.override { fonts = [ "FiraCode" "DroidSansMono" "JetBrainsMono" ]; })
+  ];
+
   
 }
